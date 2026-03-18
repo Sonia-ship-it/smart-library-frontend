@@ -1,107 +1,129 @@
 import React from 'react'
 import { useDeleteBookMutation, useFetchAllBooksQuery } from '../../../redux/features/cart/booksApi';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FiEdit2, FiTrash2, FiBookOpen, FiDollarSign } from 'react-icons/fi';
+import Swal from 'sweetalert2';
 
 const ManageBooks = () => {
     const navigate = useNavigate();
-
-    const {data: books, refetch} = useFetchAllBooksQuery()
-
+    const { data: books, refetch } = useFetchAllBooksQuery()
     const [deleteBook] = useDeleteBookMutation()
 
     const handleDeleteBook = async (id) => {
-        try {
-            await deleteBook(id).unwrap();
-            alert('Book deleted successfully!');
-            refetch();
+        const result = await Swal.fire({
+            title: 'Expunge Volume?',
+            text: "This action will permanently remove the record from the archives.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#451A03',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, expunge it!',
+            background: '#FFFDFB',
+            color: '#451A03'
+        });
 
-        } catch (error) {
-            console.error('Failed to delete book:', error.message);
-            alert('Failed to delete book. Please try again.');
+        if (result.isConfirmed) {
+            try {
+                await deleteBook(id).unwrap();
+                Swal.fire({
+                    title: 'Archived Expunged',
+                    text: 'The record has been successfully removed.',
+                    icon: 'success',
+                    confirmButtonColor: '#D97706'
+                });
+                refetch();
+            } catch (error) {
+                console.error('Failed to delete book:', error.message);
+                Swal.fire('Error', 'Restoration of archive failed.', 'error');
+            }
         }
     };
 
-
-    const handleEditClick = (id) => {
-        navigate(`dashboard/edit-book/${id}`);
-    };
-  return (
-    <section className="py-1 bg-blueGray-50">
-    <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4 mx-auto mt-24">
-        <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded ">
-            <div className="rounded-t mb-0 px-4 py-3 border-0">
-                <div className="flex flex-wrap items-center">
-                    <div className="relative w-full px-4 max-w-full flex-grow flex-1">
-                        <h3 className="font-semibold text-base text-blueGray-700">All Books</h3>
+    return (
+        <section className="animate-in fade-in duration-700">
+            <div className="premium-card bg-white overflow-hidden overflow-x-auto">
+                <div className="p-8 border-b border-amber-50 flex items-center justify-between">
+                    <div>
+                        <h3 className="text-xl font-primary font-bold text-[#451A03]">Archived Catalog</h3>
+                        <p className="text-xs font-bold text-amber-900/40 uppercase tracking-widest mt-1">Manage all literary entries</p>
                     </div>
-                    <div className="relative w-full px-4 max-w-full flex-grow flex-1 text-right">
-                        <button className="bg-indigo-500 text-white active:bg-indigo-600 text-xs font-bold uppercase px-3 py-1 rounded outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">See all</button>
+                    <div className="bg-amber-50 px-4 py-2 rounded-xl text-primary font-bold text-sm">
+                        {books?.length || 0} Total Volumes
                     </div>
                 </div>
+
+                <div className="w-full">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="bg-amber-50/30 text-[#451A03] font-primary font-bold text-xs uppercase tracking-[0.2em]">
+                                <th className="px-8 py-5">#</th>
+                                <th className="px-8 py-5">Manuscript</th>
+                                <th className="px-8 py-5">Classification</th>
+                                <th className="px-8 py-5">Valuation</th>
+                                <th className="px-8 py-5 text-right">Control</th>
+                            </tr>
+                        </thead>
+
+                        <tbody className="divide-y divide-amber-50/50">
+                            {books && books.map((book, index) => (
+                                <motion.tr
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.05 }}
+                                    key={book._id}
+                                    className="hover:bg-amber-50/20 transition-colors group"
+                                >
+                                    <td className="px-8 py-6 text-xs font-mono font-bold text-amber-900/30">
+                                        {String(index + 1).padStart(2, '0')}
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center text-primary">
+                                                <FiBookOpen size={18} />
+                                            </div>
+                                            <span className="font-bold text-[#451A03] group-hover:text-primary transition-colors">
+                                                {book.title}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-900/60 text-[10px] font-black uppercase tracking-tighter">
+                                            {book.category}
+                                        </span>
+                                    </td>
+                                    <td className="px-8 py-6">
+                                        <div className="flex items-center gap-1 font-bold text-emerald-600">
+                                            <FiDollarSign size={14} />
+                                            <span>{book.newPrice}</span>
+                                        </div>
+                                    </td>
+                                    <td className="px-8 py-6 text-right">
+                                        <div className="flex items-center justify-end gap-3">
+                                            <Link
+                                                to={`/dashboard/edit-book/${book._id}`}
+                                                className="w-10 h-10 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-600 hover:text-white transition-all shadow-sm"
+                                                title="Modify"
+                                            >
+                                                <FiEdit2 size={16} />
+                                            </Link>
+                                            <button
+                                                onClick={() => handleDeleteBook(book._id)}
+                                                className="w-10 h-10 flex items-center justify-center bg-rose-50 text-rose-600 rounded-xl hover:bg-rose-600 hover:text-white transition-all shadow-sm"
+                                                title="Expunge"
+                                            >
+                                                <FiTrash2 size={16} />
+                                            </button>
+                                        </div>
+                                    </td>
+                                </motion.tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            <div className="block w-full overflow-x-auto">
-                <table className="items-center bg-transparent w-full border-collapse ">
-                    <thead>
-                        <tr>
-                            <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                #
-                            </th>
-                            <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                Book Title
-                            </th>
-                            <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                Category
-                            </th>
-                            <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                Price
-                            </th>
-                            <th className="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {
-                            books && books.map((book, index) => (
-                                <tr key={index}>
-                                <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left text-blueGray-700 ">
-                                   {index + 1}
-                                </th>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                                    {book.title}
-                                </td>
-                                <td className="border-t-0 px-6 align-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                  {book.category}
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-
-                                    ${book.newPrice}
-                                </td>
-                                <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 space-x-4">
-
-                                    <Link to={`/dashboard/edit-book/${book._id}`} className="font-medium text-indigo-600 hover:text-indigo-700 mr-2 hover:underline underline-offset-2">
-                                        Edit
-                                    </Link>
-                                    <button 
-                                    onClick={() => handleDeleteBook(book._id)}
-                                    className="font-medium bg-red-500 py-1 px-4 rounded-full text-white mr-2">Delete</button>
-                                </td>
-                            </tr> 
-                            ))
-                        }
-         
-
-                    </tbody>
-
-                </table>
-            </div>
-        </div>
-    </div>
-
-</section>
-  )
+        </section>
+    )
 }
 
-export default ManageBooks
+export default ManageBooks;

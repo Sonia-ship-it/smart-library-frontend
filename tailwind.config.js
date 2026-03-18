@@ -1,23 +1,37 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-       "./index.html",
+    "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
-      colors:  {
-        'primary':  '#FED238',
-        'secondary': '#0D0842',
-        'blackBG': '#F3F3F3',
-        'Favorite': '#FF5841'
+      colors: {
+        'primary': '#D97706', // Rich Amber/Orange
+        'secondary': '#451A03', // Deep Chocolate
+        'accent': '#F59E0B', // Bright Orange/Gold
+        'blackBG': '#1C1917', // Warm Black
+        'Favorite': '#EF4444'
       },
-          fontFamily:  {
-        'primary':  ["Montserrat", "sans-serif"],
-        'secondary': ["Nunito Sans", "sans-serif"]
+      fontFamily: {
+        'primary': ['Outfit', 'sans-serif'],
+        'secondary': ['Inter', 'sans-serif'],
+      },
+      boxShadow: {
+        'glare': '0 0px 40px -10px rgba(217, 119, 6, 0.25)',
+      },
+      keyframes: {
+        shimmer: {
+          '100%': { transform: 'translateX(100%)' },
+        }
+      },
+      animation: {
+        shimmer: 'shimmer 1s infinite',
       }
     },
   },
   plugins: [],
 }
+
+
 

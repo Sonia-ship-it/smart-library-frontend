@@ -4,25 +4,24 @@
  }
 .mySwiper {
   width: 100%;
-  overflow: hidden; /* Ensure Swiper handles overflow */
+  overflow: hidden; 
 }
 
 .swiper-slide {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: auto; /* Let Swiper handle slide width */
+  width: auto; 
 }
 
-/* Optional: Style navigation buttons */
 .swiper-button-next,
 .swiper-button-prev {
-  color: #333; /* Adjust color to match your theme */
+  color: #333; 
 }
 
 /* Optional: Style pagination dots */
 .swiper-pagination-bullet {
-  background: #333; /* Adjust color to match your theme */
+  background: #333; 
 }
 
  .swiper-button-prev {

@@ -2,14 +2,14 @@ import React from 'react';
 
 const SelectField = ({ label, name, options, register }) => {
   return (
-    <div className="mb-4">
-      <label className="block text-sm font-semibold text-gray-700">{label}</label>
+    <div className="mb-6">
+      <label className="block text-sm font-bold text-[#451A03] mb-2 uppercase tracking-widest">{label}</label>
       <select
-        {...register(name,  { required: true })}
-        className="w-full p-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+        {...register(name, { required: true })}
+        className="input-field cursor-pointer appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%23451A03%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22m6%208%204%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-no-repeat bg-[right_0.75rem_center]"
       >
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
+          <option key={option.value} value={option.value} className="text-[#451A03] py-2">
             {option.label}
           </option>
         ))}

@@ -6,7 +6,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const RevenueChart = () => {
 
-  const revenueData = [500, 700, 800, 600, 750, 900, 650, 870, 960, 1020, 1100, 1150];;
+  const revenueData = [500, 700, 800, 600, 750, 900, 650, 870, 960, 1020, 1100, 1150];
 
   const data = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -14,37 +14,57 @@ const RevenueChart = () => {
       {
         label: 'Revenue (USD)',
         data: revenueData,
-        backgroundColor: 'rgba(34, 197, 94, 0.7)', 
-        borderColor: 'rgba(34, 197, 94, 1)',
-        borderWidth: 1,
+        backgroundColor: '#D97706', // Primary Amber
+        hoverBackgroundColor: '#451A03', // Deep Chocolate on hover
+        borderRadius: 8,
+        borderWidth: 0,
       },
     ],
   };
 
   const options = {
     responsive: true,
+    maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        display: false,
       },
-      title: {
-        display: true,
-        text: 'Monthly Revenue',
-      },
+      tooltip: {
+        backgroundColor: '#451A03',
+        titleFont: { family: 'Outfit', size: 14 },
+        bodyFont: { family: 'Inter', size: 12 },
+        padding: 12,
+        cornerRadius: 8,
+        displayColors: false,
+      }
     },
     scales: {
       y: {
         beginAtZero: true,
+        grid: {
+          color: 'rgba(69, 26, 3, 0.05)',
+          drawBorder: false,
+        },
+        ticks: {
+          font: { family: 'Inter', size: 11 },
+          color: 'rgba(69, 26, 3, 0.4)',
+        }
       },
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          font: { family: 'Inter', size: 11 },
+          color: 'rgba(69, 26, 3, 0.4)',
+        }
+      }
     },
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4 bg-white shadow-lg rounded-lg">
-      <h2 className="text-center text-2xl font-bold text-gray-800 mb-4">Monthly Revenue</h2>
-      <div className='hidden md:block'>
-      <Bar data={data} options={options} className='' />
-      </div>
+    <div className="w-full h-full">
+      <Bar data={data} options={options} />
     </div>
   );
 };
